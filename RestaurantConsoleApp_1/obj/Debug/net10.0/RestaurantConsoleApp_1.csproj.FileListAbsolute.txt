@@ -71,3 +71,4 @@
 /Users/jahongirakiljonov/RiderProjects/RestaurantConsoleApp_1/RestaurantConsoleApp_1/obj/Debug/net10.0/RestaurantConsoleApp_1.pdb
 /Users/jahongirakiljonov/RiderProjects/RestaurantConsoleApp_1/RestaurantConsoleApp_1/obj/Debug/net10.0/RestaurantConsoleApp_1.genruntimeconfig.cache
 /Users/jahongirakiljonov/RiderProjects/RestaurantConsoleApp_1/RestaurantConsoleApp_1/obj/Debug/net10.0/ref/RestaurantConsoleApp_1.dll
+/Users/jahongirakiljonov/RiderProjects/RestaurantConsoleApp_1/RestaurantConsoleApp_1/obj/Debug/net10.0/RestaurantConsoleApp_1.sourcelink.json
