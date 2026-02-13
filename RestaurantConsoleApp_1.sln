@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantConsoleApp_1", "RestaurantConsoleApp_1\RestaurantConsoleApp_1.csproj", "{FEE40715-64DE-4925-A8B9-2F19C410BF12}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEE40715-64DE-4925-A8B9-2F19C410BF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE40715-64DE-4925-A8B9-2F19C410BF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE40715-64DE-4925-A8B9-2F19C410BF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE40715-64DE-4925-A8B9-2F19C410BF12}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
