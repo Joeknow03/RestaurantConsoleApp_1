@@ -1,26 +1,19 @@
 namespace RestaurantConsoleApp_1;
 
-public class ChickenOrder
+public class ChickenOrder : Order
 {
-    private readonly int _quantity;
-
-    public ChickenOrder(int quantity)
+    public ChickenOrder(int quantity) : base(quantity)
     {
-        _quantity = quantity;
-    }
-
-    public int GetQuantity()
-    {
-        return _quantity;
     }
 
     public void CutUp()
     {
-        // chicken cut simulation
+        // Симуляция разделки курицы
     }
 
-    public void Cook()
+    public override void Cook()  // Переопределяем метод
     {
-        // cooking process
+        // Симуляция приготовления курицы
     }
+    
 }

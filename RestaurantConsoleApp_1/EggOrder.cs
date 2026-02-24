@@ -2,29 +2,20 @@ using System;
 
 namespace RestaurantConsoleApp_1;
 
-public class EggOrder
+public class EggOrder : Order
 {
-    private readonly int _quantity;
     private readonly int _quality;
-    private static int _instanceCount = 0;
+    private static int _instanceCount;
     private readonly bool _shouldReturnQuality;
 
-    public EggOrder(int quantity)
+    public EggOrder(int quantity) : base(quantity)
     {
-        _quantity = quantity;
         _instanceCount++;
         
-        // random quality
         Random rand = new Random();
         _quality = rand.Next(1, 101);
         
-        // На 2м, 4м, 6м и т.д. экземпляре возвращаем null
         _shouldReturnQuality = _instanceCount % 2 != 0;
-    }
-
-    public int GetQuantity()
-    {
-        return _quantity;
     }
 
     public int? GetQuality()
@@ -34,18 +25,17 @@ public class EggOrder
 
     public void Crack()
     {
-        // if quality is less than 25, egg is rotten
         if (_quality < 25)
             throw new Exception("Rotten egg!");
     }
 
     public void DiscardShell()
     {
-        // shell throw simulation
+        // Симуляция выбрасывания скорлупы
     }
 
-    public void Cook()
+    public override void Cook()  // Переопределяем метод
     {
-        //cooking simulation
+        // Симуляция приготовления яиц
     }
 }
