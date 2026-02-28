@@ -4,66 +4,83 @@ namespace RestaurantConsoleApp_1;
 
 public class Cook
 {
-    private bool _foodPrepared = false;
-
-    public ChickenOrder SubmitChickenOrder(int quantity)
+    public string Process(TableRequests requests)
     {
-        _foodPrepared = false;
-        return new ChickenOrder(quantity);
-    }
+        string result = "";
+        int rottenEggs = 0;
 
-    public EggOrder SubmitEggOrder(int quantity)
-    {
-        _foodPrepared = false;
-        return new EggOrder(quantity);
-    }
-
-    public string PrepareChicken(ChickenOrder order)
-    {
-        if (_foodPrepared)
-            throw new Exception("Food already prepared!");
-
-        int quantity = order.GetQuantity();
-        for (int i = 0; i < quantity; i++)
+        try
         {
-            order.CutUp();
+            // Обрабатываем курицу
+            IMenuItem[] chickens = requests[new Chicken(1)]; // используем индексатор
+            if (chickens.Length > 0)
+            {
+                foreach (var item in chickens)
+                {
+                    if (item is Chicken chicken)
+                    {
+                        chicken.Obtain();
+                        chicken.CutUp();
+                    }
+                }
+
+                // Готовим всю курицу сразу
+                if (chickens.Length > 0 && chickens[0] is Chicken firstChicken)
+                {
+                    firstChicken.Cook();
+                }
+
+                result += $"Prepared {chickens.Length} chicken(s)\n";
+            }
+
+            // Обрабатываем яйца
+            IMenuItem[] eggs = requests[new Egg(1)]; // используем индексатор
+            if (eggs.Length > 0)
+            {
+                foreach (var item in eggs)
+                {
+                    if (item is Egg egg)
+                    {
+                        egg.Obtain();
+                        
+                        try
+                        {
+                            egg.Crack();
+                        }
+                        catch (Exception)
+                        {
+                            rottenEggs++;
+                        }
+                        finally
+                        {
+                            // IDisposable - выбрасываем скорлупу
+                            egg.Dispose();
+                        }
+                    }
+                }
+
+                // Готовим все яйца сразу
+                if (eggs.Length > 0 && eggs[0] is Egg firstEgg)
+                {
+                    firstEgg.Cook();
+                }
+
+                result += $"Prepared {eggs.Length} egg(s)";
+                if (rottenEggs > 0)
+                    result += $" (found {rottenEggs} rotten)";
+                result += "\n";
+            }
+
+            if (chickens.Length == 0 && eggs.Length == 0)
+            {
+                result = "No food to prepare!";
+            }
         }
-        order.Cook();
-
-        _foodPrepared = true;
-        return $"Prepared {quantity} chicken(s)";
-    }
-
-    public string PrepareEggs(EggOrder order)
-    {
-        if (_foodPrepared)
-            throw new Exception("Food already prepared!");
-
-        int quantity = order.GetQuantity();
-        int rottenCount = 0;
-
-        for (int i = 0; i < quantity; i++)
+        catch (Exception ex)
         {
-            try
-            {
-                order.Crack();
-            }
-            catch (Exception)
-            {
-                rottenCount++;
-            }
-            finally
-            {
-                order.DiscardShell();
-            }
+            result = $"Cook error: {ex.Message}";
         }
 
-        order.Cook();
-        _foodPrepared = true;
-
-        if (rottenCount > 0)
-            return $"Prepared {quantity} egg(s). Found {rottenCount} rotten!";
-        else
-            return $"Prepared {quantity} egg(s)";
+        return result;
     }
 }

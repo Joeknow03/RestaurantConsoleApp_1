@@ -1,11 +1,13 @@
 namespace RestaurantConsoleApp_1;
 
-public enum MenuItem
+public abstract class MenuItem : IMenuItem
 {
-    Chicken,
-    Egg,
-    Tea,
-    CocaCola,
-    Pepsi,
-    NoDrink
+    // Состояния элемента меню
+    protected bool _isObtained = false;
+    protected bool _isServed = false;
+
+    // Abstract методы - должны быть реализованы в наследниках
+    public abstract void Obtain();
+    public abstract void Serve();
+    public abstract string GetName();
 }

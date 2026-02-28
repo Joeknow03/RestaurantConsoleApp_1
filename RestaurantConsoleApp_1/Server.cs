@@ -1,94 +1,77 @@
 using System;
-using System.Collections.Generic;
 
 namespace RestaurantConsoleApp_1;
 
 public class Server
 {
-    private MenuItem[][] _tableRequests;  // Jagged array
+    private TableRequests _tableRequests;
     private int _currentCustomer = 0;
     private const int MAX_CUSTOMERS = 8;
 
     public Server()
     {
-        _tableRequests = new MenuItem[MAX_CUSTOMERS][];
+        _tableRequests = new TableRequests();
     }
 
-    // Принять заказ от одного клиента
-    public string ReceiveRequest(int chickenQty, int eggQty, MenuItem drink)
+    // Принять заказ от клиента
+    public string ReceiveRequest(int chickenQty, int eggQty, string drinkType)
     {
         if (_currentCustomer >= MAX_CUSTOMERS)
             return "Table is full! Maximum 8 customers.";
 
-        // Создаем массив для этого клиента
-        List<MenuItem> items = new List<MenuItem>();
+        try
+        {
+            // Добавляем курицу
+            for (int i = 0; i < chickenQty; i++)
+            {
+                _tableRequests.Add(_currentCustomer, new Chicken(1));
+            }
 
-        // Добавляем курицу
-        for (int i = 0; i < chickenQty; i++)
-            items.Add(MenuItem.Chicken);
+            // Добавляем яйца
+            for (int i = 0; i < eggQty; i++)
+            {
+                _tableRequests.Add(_currentCustomer, new Egg(1));
+            }
 
-        // Добавляем яйца
-        for (int i = 0; i < eggQty; i++)
-            items.Add(MenuItem.Egg);
+            // Добавляем напиток
+            IMenuItem drink = drinkType switch
+            {
+                "Tea" => new Tea(),
+                "CocaCola" => new CocaCola(),
+                "Pepsi" => new Pepsi(),
+                _ => new NoDrink()
+            };
 
-        // Добавляем напиток (если есть)
-        if (drink != MenuItem.NoDrink)
-            items.Add(drink);
+            if (drink is not NoDrink)
+            {
+                _tableRequests.Add(_currentCustomer, drink);
+            }
 
-        _tableRequests[_currentCustomer] = items.ToArray();
-        _currentCustomer++;
-
-        return $"Customer {_currentCustomer - 1} order received: {chickenQty} chicken, {eggQty} egg, {drink}";
+            string result = $"Customer {_currentCustomer} order received: {chickenQty} chicken, {eggQty} egg, {drink.GetName()}";
+            _currentCustomer++;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
     }
 
-    // Отправить все заказы повару
-    public string SendAllRequestsToCook(Cook cook)
+    // Отправить заказы повару
+    public string SendToCook(Cook cook)
     {
         if (_currentCustomer == 0)
             return "No orders to send!";
 
-        // Подсчитываем общее количество
-        int totalChicken = 0;
-        int totalEgg = 0;
-
-        for (int i = 0; i < _currentCustomer; i++)
-        {
-            if (_tableRequests[i] != null)
-            {
-                foreach (var item in _tableRequests[i])
-                {
-                    if (item == MenuItem.Chicken) totalChicken++;
-                    if (item == MenuItem.Egg) totalEgg++;
-                }
-            }
-        }
-
-        string result = "";
-
         try
         {
-            // Готовим курицу
-            if (totalChicken > 0)
-            {
-                ChickenOrder chickenOrder = cook.SubmitChickenOrder(totalChicken);
-                result += cook.PrepareChicken(chickenOrder) + "\n";
-            }
-
-            // Готовим яйца
-            if (totalEgg > 0)
-            {
-                EggOrder eggOrder = cook.SubmitEggOrder(totalEgg);
-                result += cook.PrepareEggs(eggOrder) + "\n";
-            }
-
-            result += $"\nTotal: {totalChicken} chicken, {totalEgg} egg prepared";
+            string result = cook.Process(_tableRequests);
+            return result;
         }
         catch (Exception ex)
         {
-            result = $"Error: {ex.Message}";
+            return $"Error: {ex.Message}";
         }
-
-        return result;
     }
 
     // Подать еду клиентам
@@ -101,18 +84,19 @@ public class Server
 
         for (int i = 0; i < _currentCustomer; i++)
         {
+            IMenuItem[] customerItems = _tableRequests[i]; // используем индексатор
+
             int chickenCount = 0;
             int eggCount = 0;
             string drink = "no drink";
 
-            if (_tableRequests[i] != null)
+            foreach (var item in customerItems)
             {
-                foreach (var item in _tableRequests[i])
-                {
-                    if (item == MenuItem.Chicken) chickenCount++;
-                    else if (item == MenuItem.Egg) eggCount++;
-                    else if (item != MenuItem.NoDrink) drink = item.ToString();
-                }
+                item.Serve(); // Подаем еду
+
+                if (item is Chicken) chickenCount++;
+                else if (item is Egg) eggCount++;
+                else if (item is Drink && item is not NoDrink) drink = item.GetName();
             }
 
             result += $"Customer {i} is served {chickenCount} chicken, {eggCount} egg, {drink}\n";
@@ -120,8 +104,8 @@ public class Server
 
         result += "\nPlease enjoy your food!";
 
-        // Очищаем стол для новых клиентов
-        _tableRequests = new MenuItem[MAX_CUSTOMERS][];
+        // Очищаем стол
+        _tableRequests.Clear();
         _currentCustomer = 0;
 
         return result;

@@ -34,10 +34,10 @@ public partial class MainWindow : Window
             }
 
             // Определяем напиток
-            MenuItem drink = MenuItem.NoDrink;
-            if (TeaRadio.IsChecked == true) drink = MenuItem.Tea;
-            else if (ColaRadio.IsChecked == true) drink = MenuItem.CocaCola;
-            else if (PepsiRadio.IsChecked == true) drink = MenuItem.Pepsi;
+            string drink = "NoDrink";
+            if (TeaRadio.IsChecked == true) drink = "Tea";
+            else if (ColaRadio.IsChecked == true) drink = "CocaCola";
+            else if (PepsiRadio.IsChecked == true) drink = "Pepsi";
 
             // Принимаем заказ
             string result = _server.ReceiveRequest(chickenQty, eggQty, drink);
@@ -53,7 +53,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            string result = _server.SendAllRequestsToCook(_cook);
+            string result = _server.SendToCook(_cook);
             ResultsTextBox.Text = result;
         }
         catch (Exception ex)
