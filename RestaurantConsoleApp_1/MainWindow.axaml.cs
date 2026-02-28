@@ -6,34 +6,42 @@ namespace RestaurantConsoleApp_1;
 
 public partial class MainWindow : Window
 {
-    private Employee _employee;
-    private object? _currentOrder;
+    private Server _server;
+    private Cook _cook;
 
     public MainWindow()
     {
         InitializeComponent();
-        _employee = new Employee();
+        _server = new Server();
+        _cook = new Cook();
     }
 
-    private void SubmitNewRequest_Click(object sender, RoutedEventArgs e)
+    private void ReceiveRequest_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            if (!int.TryParse(QuantityTextBox.Text, out int quantity) || quantity <= 0)
+            // Парсим количество
+            if (!int.TryParse(ChickenQtyTextBox.Text, out int chickenQty) || chickenQty < 0)
             {
-                ResultsTextBox.Text = "Error: Please enter a valid quantity!";
+                ResultsTextBox.Text = "Error: Enter valid chicken quantity (0 or more)!";
                 return;
             }
 
-            string menuItem = ChickenRadio.IsChecked == true ? "Chicken" : "Egg";
-            
-            _currentOrder = _employee.NewRequest(quantity, menuItem);
-            
-            string inspectionResult = _employee.Inspect(_currentOrder);
-            EggQualityText.Text = inspectionResult;
-            
-            string orderType = _currentOrder is ChickenOrder ? "Chicken" : "Egg";
-            ResultsTextBox.Text = $"Employee obtained: {quantity} {orderType}\n{inspectionResult}";
+            if (!int.TryParse(EggQtyTextBox.Text, out int eggQty) || eggQty < 0)
+            {
+                ResultsTextBox.Text = "Error: Enter valid egg quantity (0 or more)!";
+                return;
+            }
+
+            // Определяем напиток
+            string drink = "NoDrink";
+            if (TeaRadio.IsChecked == true) drink = "Tea";
+            else if (ColaRadio.IsChecked == true) drink = "CocaCola";
+            else if (PepsiRadio.IsChecked == true) drink = "Pepsi";
+
+            // Принимаем заказ
+            string result = _server.ReceiveRequest(chickenQty, eggQty, drink);
+            ResultsTextBox.Text = result;
         }
         catch (Exception ex)
         {
@@ -41,21 +49,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private void CopyPreviousRequest_Click(object sender, RoutedEventArgs e)
+    private void SendToCook_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            _currentOrder = _employee.CopyRequest();
-            
-            string inspectionResult = _employee.Inspect(_currentOrder);
-            EggQualityText.Text = inspectionResult;
-            
-            string orderType = _currentOrder is ChickenOrder ? "Chicken" : "Egg";
-            int quantity = _currentOrder is ChickenOrder chicken 
-                ? chicken.GetQuantity() 
-                : ((EggOrder)_currentOrder).GetQuantity();
-            
-            ResultsTextBox.Text = $"Employee copied previous order: {quantity} {orderType}\n{inspectionResult}";
+            string result = _server.SendToCook(_cook);
+            ResultsTextBox.Text = result;
         }
         catch (Exception ex)
         {
@@ -63,17 +62,11 @@ public partial class MainWindow : Window
         }
     }
 
-    private void PrepareFood_Click(object sender, RoutedEventArgs e)
+    private void ServeFood_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            if (_currentOrder == null)
-            {
-                ResultsTextBox.Text = "Error: No order to prepare! Submit a request first.";
-                return;
-            }
-
-            string result = _employee.PrepareFood(_currentOrder);
+            string result = _server.ServeFood();
             ResultsTextBox.Text = result;
         }
         catch (Exception ex)
