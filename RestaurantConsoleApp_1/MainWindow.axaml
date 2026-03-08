@@ -2,59 +2,61 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="RestaurantConsoleApp_1.MainWindow"
         Title="My Restaurant"
-        Width="550" Height="650">
+        Width="550" Height="720">
 
     <StackPanel Margin="20" Spacing="15">
 
-        <TextBlock Text="My Restaurant" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+        <TextBlock Text="My Restaurant" FontSize="24" FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
 
         <TextBlock Text="Menu" FontWeight="Bold" Margin="0,10,0,5"/>
 
-        <!-- Chicken quantity -->
+        <!-- Имя клиента (новое поле) -->
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="Customer name:" Width="150" VerticalAlignment="Center"/>
+            <TextBox x:Name="CustomerNameTextBox" Width="200" Watermark="e.g. Brent"/>
+        </StackPanel>
+
+        <!-- Количество курицы -->
         <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Text="How many chicken?" Width="150" VerticalAlignment="Center"/>
             <TextBox x:Name="ChickenQtyTextBox" Width="100" Text="0"/>
         </StackPanel>
 
-        <!-- Egg quantity -->
+        <!-- Количество яиц -->
         <StackPanel Orientation="Horizontal" Spacing="10">
             <TextBlock Text="How many egg?" Width="150" VerticalAlignment="Center"/>
             <TextBox x:Name="EggQtyTextBox" Width="100" Text="0"/>
         </StackPanel>
 
-        <!-- Drink selection -->
+        <!-- Напиток -->
         <TextBlock Text="Choose a drink:" Margin="0,10,0,5"/>
         <StackPanel Spacing="5">
-            <RadioButton x:Name="NoDrinkRadio" Content="No Drink" IsChecked="True"/>
-            <RadioButton x:Name="TeaRadio" Content="Tea"/>
-            <RadioButton x:Name="ColaRadio" Content="Coca-Cola"/>
-            <RadioButton x:Name="PepsiRadio" Content="Pepsi"/>
+            <RadioButton x:Name="NoDrinkRadio"  Content="No Drink" IsChecked="True"/>
+            <RadioButton x:Name="TeaRadio"       Content="Tea"/>
+            <RadioButton x:Name="ColaRadio"      Content="Coca-Cola"/>
+            <RadioButton x:Name="PepsiRadio"     Content="Pepsi"/>
         </StackPanel>
 
-        <!-- Buttons -->
-        <Button Content="Receive this request from a Customer" 
-                Click="ReceiveRequest_Click" 
-                Width="300" 
-                HorizontalAlignment="Left" 
-                Margin="0,15,0,0"/>
+        <!-- Кнопки -->
+        <Button Content="Receive this request from a Customer"
+                Click="ReceiveRequest_Click"
+                Width="320" HorizontalAlignment="Left" Margin="0,15,0,0"/>
 
-        <Button Content="Send all Customer requests to the Cook" 
-                Click="SendToCook_Click" 
-                Width="300" 
-                HorizontalAlignment="Left"/>
+        <Button x:Name="SendToCookButton"
+                Content="Send all Customer requests to the Cook"
+                Click="SendToCook_Click"
+                Width="320" HorizontalAlignment="Left"/>
 
-        <Button Content="Serve prepared food to the Customers" 
-                Click="ServeFood_Click" 
-                Width="300" 
-                HorizontalAlignment="Left"/>
+        <Button Content="Serve prepared food to the Customers"
+                Click="ServeFood_Click"
+                Width="320" HorizontalAlignment="Left"/>
 
-        <!-- Results -->
+        <!-- Результаты -->
         <TextBlock Text="Results" FontWeight="Bold" Margin="0,20,0,5"/>
-        <TextBox x:Name="ResultsTextBox" 
-                 Height="200" 
-                 TextWrapping="Wrap" 
-                 IsReadOnly="True"
-                 AcceptsReturn="True"/>
+        <TextBox x:Name="ResultsTextBox"
+                 Height="220" TextWrapping="Wrap"
+                 IsReadOnly="True" AcceptsReturn="True"/>
 
     </StackPanel>
 </Window>

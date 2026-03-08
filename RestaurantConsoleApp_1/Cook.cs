@@ -1,18 +1,28 @@
 using System;
+using System.Threading;
 
 namespace RestaurantConsoleApp_1;
 
 public class Cook
 {
+    public int Id { get; }
+
+    public Cook() : this(1) { }
+
+    public Cook(int id)
+    {
+        Id = id;
+    }
+
     public string Process(TableRequests requests)
     {
-        string result = "";
-        int rottenEggs = 0;
+        string result   = "";
+        int rottenEggs  = 0;
 
         try
         {
-            // Обрабатываем курицу
-            IMenuItem[] chickens = requests[new Chicken(1)]; // используем индексатор
+            // Курица
+            IMenuItem[] chickens = requests[new Chicken(1)];
             if (chickens.Length > 0)
             {
                 foreach (var item in chickens)
@@ -24,17 +34,16 @@ public class Cook
                     }
                 }
 
-                // Готовим всю курицу сразу
-                if (chickens.Length > 0 && chickens[0] is Chicken firstChicken)
-                {
-                    firstChicken.Cook();
-                }
+                Thread.Sleep(600 * chickens.Length); // симуляция готовки
 
-                result += $"Prepared {chickens.Length} chicken(s)\n";
+                if (chickens[0] is Chicken firstChicken)
+                    firstChicken.Cook();
+
+                result += $"[Cook {Id}] Prepared {chickens.Length} chicken(s)\n";
             }
 
-            // Обрабатываем яйца
-            IMenuItem[] eggs = requests[new Egg(1)]; // используем индексатор
+            // Яйца
+            IMenuItem[] eggs = requests[new Egg(1)];
             if (eggs.Length > 0)
             {
                 foreach (var item in eggs)
@@ -42,43 +51,28 @@ public class Cook
                     if (item is Egg egg)
                     {
                         egg.Obtain();
-                        
-                        try
-                        {
-                            egg.Crack();
-                        }
-                        catch (Exception)
-                        {
-                            rottenEggs++;
-                        }
-                        finally
-                        {
-                            // IDisposable - выбрасываем скорлупу
-                            egg.Dispose();
-                        }
+                        try   { egg.Crack(); }
+                        catch { rottenEggs++; }
+                        finally { egg.Dispose(); }
                     }
                 }
 
-                // Готовим все яйца сразу
-                if (eggs.Length > 0 && eggs[0] is Egg firstEgg)
-                {
-                    firstEgg.Cook();
-                }
+                Thread.Sleep(400 * eggs.Length); // симуляция готовки
 
-                result += $"Prepared {eggs.Length} egg(s)";
-                if (rottenEggs > 0)
-                    result += $" (found {rottenEggs} rotten)";
+                if (eggs[0] is Egg firstEgg)
+                    firstEgg.Cook();
+
+                result += $"[Cook {Id}] Prepared {eggs.Length} egg(s)";
+                if (rottenEggs > 0) result += $" (found {rottenEggs} rotten)";
                 result += "\n";
             }
 
             if (chickens.Length == 0 && eggs.Length == 0)
-            {
-                result = "No food to prepare!";
-            }
+                result = $"[Cook {Id}] No food to prepare!";
         }
         catch (Exception ex)
         {
-            result = $"Cook error: {ex.Message}";
+            result = $"[Cook {Id}] Error: {ex.Message}";
         }
 
         return result;
